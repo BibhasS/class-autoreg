@@ -1,0 +1,6 @@
+.venv/
+user-data/
+shots/
+auto_reg.log
+__pycache__/
+*.pyc
