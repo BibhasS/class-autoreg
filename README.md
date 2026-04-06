@@ -1,58 +1,53 @@
-# 📚 Class Auto Registration Bot (UT Dallas)
+# UT Dallas — Class Auto-Registration Bot
 
-Automates clicking the **Register → Continue** flow on the UT Dallas College Scheduler site using a real Brave browser session.
+Automates the **Register → Continue** flow on the UT Dallas College Scheduler using your existing logged-in Brave browser session. Built for high-frequency retries when classes are full or registration opens early.
 
-Designed for high-frequency retry attempts when classes are full.
-
----
-
-## 🚀 Features
-
-- Uses your **existing logged-in browser session**
-- Connects via **Chrome DevTools Protocol (CDP)**
-- Automatically:
-  - Navigates to cart
-  - Clicks Register and Continue
-  - Detects success or failure
-- Saves screenshots of outcomes
-- Logs every attempt
-- Can run repeatedly on a timer
+**Made by bibs** · Python 3.10+ · Playwright · Chrome DevTools Protocol
 
 ---
 
-## 🧠 How It Works
+## Features
 
-1. Launch Brave in debug mode  
-2. Script connects to that browser session  
-3. Finds your scheduler tab or opens one  
-4. Clicks through registration flow  
-5. Detects result:
-   - Success → class added
-   - Failure → class full or error  
-6. Saves screenshot and logs result  
+- Connects to your **already-logged-in Brave browser** via Chrome DevTools Protocol — no credentials stored in the script
+- Automatically navigates to your cart, clicks **Register**, then **Continue**
+- Detects whether registration succeeded or failed
+- Saves a **screenshot** of every attempt
+- Logs all results to a file
+- Can loop automatically on a timer
 
 ---
 
-## 📂 Project Structure
+## How It Works
+
+1. You launch Brave in remote debug mode
+2. You log in manually and add classes to your cart
+3. The script connects to that browser session
+4. It clicks through the registration flow
+5. It detects the outcome (success, class full, or error)
+6. It saves a screenshot and logs the result
+7. It waits, then tries again
+
+---
+
+## Project Structure
 
 ```
 class-autoreg/
-│
 ├── brave_click_register.py     # Main automation script
-├── start_brave_debug.cmd       # Launch Brave with remote debugging
-├── rapid_test.cmd              # Run script once (quick test)
-├── run_click_register.cmd      # Single execution wrapper
-├── run_every_23min.cmd         # Loop script every ~23 minutes
-├── auto_reg.log                # Log output
-├── shots/                      # Screenshots of attempts
-└── user-data/                  # Persistent Brave profile
+├── start_brave_debug.cmd       # Launches Brave with remote debugging
+├── rapid_test.cmd              # Run the script once (quick test)
+├── run_click_register.cmd      # Single-execution wrapper
+├── run_every_23min.cmd         # Loops the script every ~23 minutes
+├── auto_reg.log                # All attempt results logged here
+├── shots/                      # Screenshots from each attempt
+└── user-data/                  # Persistent Brave profile (keeps you logged in)
 ```
 
 ---
 
-## ⚙️ Requirements
+## Requirements
 
-- Python 3.10+
+- Python 3.10 or higher
 - Playwright
 
 Install dependencies:
@@ -64,9 +59,9 @@ playwright install
 
 ---
 
-## 🧪 Setup
+## Setup
 
-### 1. Start Brave in Debug Mode
+### 1. Start Brave in debug mode
 
 Run:
 
@@ -74,24 +69,25 @@ Run:
 start_brave_debug.cmd
 ```
 
-This launches Brave with:
-- Remote debugging on `127.0.0.1:9222`
-- Persistent profile (`user-data/`)
+This opens Brave with remote debugging on `127.0.0.1:9222` and loads your persistent profile from `user-data/`.
 
 ---
 
-### 2. Log In Manually
+### 2. Log in and prepare your cart
 
-In the opened Brave window:
+In the Brave window that opens, go to:
 
-1. Go to:
-   https://utdallas.collegescheduler.com/terms/2026%20Spring/cart
-2. Log into your account
-3. Make sure your desired classes are in the cart
+```
+https://utdallas.collegescheduler.com/terms/2026%20Spring/cart
+```
+
+Log in with your UTD account and add your desired classes to the cart.
+
+> **Do not close this browser window while the script is running.**
 
 ---
 
-### 3. Test Run
+### 3. Test run
 
 Run:
 
@@ -99,117 +95,62 @@ Run:
 rapid_test.cmd
 ```
 
-Expected behavior:
-- Clicks Register → Continue
-- Logs result in terminal
-- Saves screenshot in `/shots`
+The script will click Register → Continue, log the result, and save a screenshot in `/shots`.
 
 ---
 
-## 🔁 Continuous Auto-Retry
+### 4. Start the retry loop
 
-To run repeatedly:
+Run:
 
 ```bash
 run_every_23min.cmd
 ```
 
-This will:
-- Execute the script
-- Wait ~23 minutes
-- Repeat indefinitely
+The script will execute, wait ~23 minutes, then repeat indefinitely.
 
 ---
 
-## 🧾 Logs & Output
+## Logs & Output
 
-### Log File
-
-```
-auto_reg.log
-```
-
-Example:
+All results are written to `auto_reg.log`. Example entry:
 
 ```
 [auto-reg] 2026-03-29T01:23:45 - [OK] SUCCESS: Class added.
 ```
 
----
-
-### Screenshots
-
-Saved in:
-
-```
-/shots/
-```
-
-Types:
-- success
-- full_or_error
-- timeout
+Screenshots in `/shots` are labeled by outcome: `success`, `full_or_error`, or `timeout`.
 
 ---
 
-## ⚠️ Troubleshooting
+## Troubleshooting
 
-### Cannot connect to browser
-
-```
-ERROR: Could not connect to Brave at 127.0.0.1:9222
-```
-
-Fix:
-- Run `start_brave_debug.cmd` first
+| Problem | Fix |
+|---|---|
+| `ERROR: Could not connect to Brave at 127.0.0.1:9222` | Run `start_brave_debug.cmd` first and keep Brave open |
+| Script does nothing | Confirm you're on the `/cart` page and buttons still say "Register" / "Continue" |
+| Not logged in | Log in manually in the debug Brave window before running |
+| Buttons not found | The scheduler UI may have changed — update selectors in the script: `page.get_by_role("button", name="Register")` |
 
 ---
 
-### Not logged in
+## Ideas to Extend This
 
-Fix:
-- Log in manually in the debug Brave window
-
----
-
-### Script does nothing
-
-Fix:
-- Make sure you're on `/cart` page
-- Ensure buttons still say:
-  - Register
-  - Continue
+- **Discord or SMS alerts** — get notified the moment a class is registered
+- **Shorter retry interval** — reduce the 23-minute wait for faster attempts
+- **Multiple classes** — loop through several classes in one run
+- **Headless mode** — run without a visible browser window
 
 ---
 
-### Selectors broken
+## Notes
 
-If UI changes, update selectors in:
-
-```python
-page.get_by_role("button", name="Register")
-```
+- This uses a **real browser session**, not headless automation — lower detection risk
+- The script never stores or transmits your credentials
+- Keep the debug Brave window open while running
 
 ---
 
-## 🔒 Notes
+## Disclaimer
 
-- This uses a **real browser session**, not headless automation
-- Lower detection risk compared to bots that log in automatically
-- Do not close the debug browser while running
-
----
-
-## 🛠️ Customization Ideas
-
-- Add Discord or SMS alerts on success
-- Reduce retry interval
-- Add multiple class attempts
-- Headless fallback mode
-- GUI dashboard
-
----
-
-## 📌 Disclaimer
-
-This script is for personal automation. Use responsibly and in accordance with your institution’s policies.
+This script is for personal use only. Use responsibly and in accordance with UT Dallas's policies on automated access.
