@@ -35,7 +35,7 @@ Automates the **Register → Continue** flow on the UT Dallas College Scheduler 
 class-autoreg/
 ├── brave_click_register.py     # Main automation script
 ├── start_brave_debug.cmd       # Launches Brave with remote debugging
-├── rapid_test.cmd              # Run the script once (quick test)
+├── rapid_test.cmd              # Loops the script every ~45 seconds
 ├── run_click_register.cmd      # Single-execution wrapper
 ├── run_every_23min.cmd         # Loops the script every ~23 minutes
 ├── auto_reg.log                # All attempt results logged here
