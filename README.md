@@ -1,4 +1,4 @@
-# UT Dallas — Class Auto-Registration Bot
+# Class Auto Registration Bot for UT Dallas
 
 Automates the **Register → Continue** flow on the UT Dallas College Scheduler using your existing logged-in Brave browser session. Built for high-frequency retries when classes are full or registration opens early.
 
@@ -8,18 +8,18 @@ Automates the **Register → Continue** flow on the UT Dallas College Scheduler 
 
 ## Features
 
-- Connects to your **already-logged-in Brave browser** via Chrome DevTools Protocol — no credentials stored in the script
+- Connects to your **Brave browser** via Chrome DevTools Protocol — no credentials stored in the script
 - Automatically navigates to your cart, clicks **Register**, then **Continue**
 - Detects whether registration succeeded or failed
 - Saves a **screenshot** of every attempt
 - Logs all results to a file
-- Can loop automatically on a timer
+- Can loop automatically in 45 seconds or 23 mins
 
 ---
 
 ## How It Works
 
-1. You launch Brave in remote debug mode
+1. Brave is open in remote debug mode 
 2. You log in manually and add classes to your cart
 3. The script connects to that browser session
 4. It clicks through the registration flow
@@ -69,7 +69,7 @@ Run:
 start_brave_debug.cmd
 ```
 
-This opens Brave with remote debugging on `127.0.0.1:9222` and loads your persistent profile from `user-data/`.
+This opens Brave with remote debugging and loads your persistent profile from `user-data/`. 
 
 ---
 
@@ -78,8 +78,10 @@ This opens Brave with remote debugging on `127.0.0.1:9222` and loads your persis
 In the Brave window that opens, go to:
 
 ```
-https://utdallas.collegescheduler.com/terms/2026%20Spring/cart
+https://utdallas.collegescheduler.com/terms/???/cart
 ```
+
+This depends on which term you are picking. For Fall 2026 it will be ``2026%20Fall``. For Summer 2026 it will be ``2026%20Summer``. MAKE SURE TO CHANGE IT BEFORE YOU RUN!
 
 Log in with your UTD account and add your desired classes to the cart.
 
@@ -109,6 +111,11 @@ run_every_23min.cmd
 
 The script will execute, wait ~23 minutes, then repeat indefinitely.
 
+Run:
+```bash
+rapid.cmd
+```
+If you want it to execute every 45 seconds.
 ---
 
 ## Logs & Output
@@ -134,14 +141,6 @@ Screenshots in `/shots` are labeled by outcome: `success`, `full_or_error`, or `
 
 ---
 
-## Ideas to Extend This
-
-- **Discord or SMS alerts** — get notified the moment a class is registered
-- **Shorter retry interval** — reduce the 23-minute wait for faster attempts
-- **Multiple classes** — loop through several classes in one run
-- **Headless mode** — run without a visible browser window
-
----
 
 ## Notes
 
